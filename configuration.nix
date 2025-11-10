@@ -72,8 +72,12 @@
   # ========= DOCKER =========
 
   virtualisation.docker = {
-    enable = true;
+    enable = false;
     autoPrune.enable = true;
+    rootless = {
+    enable = true;
+    setSocketVariable = true; # Automatically sets DOCKER_HOST for users
+  };
     # Store Docker data on persistent volume (uncomment to enable)
     # dataRoot = "/home/qwe/docker";
   };

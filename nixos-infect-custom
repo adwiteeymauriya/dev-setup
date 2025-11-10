@@ -416,10 +416,10 @@ infect() {
   done
 
   NIX_INSTALL_URL="${NIX_INSTALL_URL:-https://nixos.org/nix/install}"
-  curl -L "${NIX_INSTALL_URL}" | sh -s -- --no-channel-add
+  curl -L "${NIX_INSTALL_URL}" | sh -s -- --daemon --no-channel-add
 
   # shellcheck disable=SC1090
-  source ~/.nix-profile/etc/profile.d/nix.sh
+  source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
   [[ -z "$NIX_CHANNEL" ]] && NIX_CHANNEL="nixos-24.05"
   nix-channel --remove nixpkgs
