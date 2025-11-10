@@ -136,9 +136,9 @@ echo "export PATH=\"\$HOME/.local/bin:\$PATH\"" >> ~/.zshrc
 log "Installing Docker..."
 curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
 sh /tmp/get-docker.sh
-sudo -u $USERNAME HOME="$HOME_DIR" bash -lc '
-dockerd-rootless-setuptool.sh install --force 
-'
+# sudo -u $USERNAME HOME="$HOME_DIR" bash -lc '
+# dockerd-rootless-setuptool.sh install --force 
+# '
 
 # ========= DONE =========
 log "All complete."
