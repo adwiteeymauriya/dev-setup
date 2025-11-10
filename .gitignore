@@ -1,0 +1,21 @@
+# Nix build artifacts
+result
+result-*
+
+# NixOS hardware config (auto-generated, should be regenerated per machine)
+# Uncomment if you want to track hardware-configuration.nix in git
+# hardware-configuration.nix
+
+# Flake lock should be committed to ensure reproducibility
+# flake.lock is NOT ignored
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
