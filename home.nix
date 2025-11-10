@@ -45,6 +45,7 @@
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    histSize = 10000;
 
     shellAliases = {
       ll = "eza -la";
@@ -65,6 +66,8 @@
     };
   };
 
+  users.defaultUserShell = pkgs.zsh;
+  environment.shells = pkgs.zsh;
   # ========= GIT =========
 
   programs.git = {
