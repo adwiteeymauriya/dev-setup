@@ -23,6 +23,8 @@ hardware-configuration.nix → Hardware-specific settings (auto-generated)
 ## Documentation
 
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide (TL;DR)
+- **[APPLY-AFTER-INFECT.md](APPLY-AFTER-INFECT.md)** - 🔄 Migrating from nixos-infect to your config
+- **[MACHINE-SPECIFIC.md](MACHINE-SPECIFIC.md)** - 🔧 Device paths and server-specific settings
 - **[BOOTSTRAP.md](BOOTSTRAP.md)** - ⚠️ First-time setup: Moving /nix to volume
 - **[PERSISTENCE.md](PERSISTENCE.md)** - Volume persistence & VPS migration
 - **[DIAGRAM.md](DIAGRAM.md)** - Visual architecture diagrams
@@ -59,7 +61,10 @@ cd /etc/nixos
 # 3. Generate hardware config
 nixos-generate-config --show-hardware-config > hardware-configuration.nix
 
-# 4. Review configuration.nix (adjust volume path, username, SSH keys, etc.)
+# 4. Create machine-specific.nix with your device paths
+cp machine-specific.nix.example machine-specific.nix
+# Edit machine-specific.nix with your volume device path
+vim machine-specific.nix
 
 # 5. Apply configuration
 nixos-rebuild switch --flake .#devserver

@@ -1,0 +1,22 @@
+# Machine-specific configuration template
+# Copy this file to machine-specific.nix and edit for your server
+#
+# Usage:
+#   cp machine-specific.nix.example machine-specific.nix
+#   # Edit machine-specific.nix with your actual device paths
+#   nixos-rebuild switch --flake .#devserver
+
+{
+  # Volume configuration
+  # Find your volume: ls -la /dev/disk/by-id/ | grep Volume
+  volumeDevice = "/dev/disk/by-id/scsi-0HC_Volume_XXXXX";
+
+  # Hostname for this machine
+  hostname = "devserver";
+
+  # Root disk device (usually /dev/sda or /dev/vda)
+  rootDevice = "/dev/sda";
+
+  # Root partition (usually /dev/sda1 or /dev/vda1)
+  rootPartition = "/dev/sda1";
+}

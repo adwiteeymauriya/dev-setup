@@ -1,8 +1,13 @@
 { config, pkgs, lib, ... }:
 
+let
+  machineSpecific = import ./machine-specific.nix;
+in
 {
   imports = [
     ./hardware-configuration.nix
+    # Uncomment if you want to use nixos-infect generated networking
+    # ./networking.nix
   ];
 
   # ========= SYSTEM CONFIGURATION =========
@@ -15,16 +20,16 @@
   # ========= BOOT & FILESYSTEM =========
 
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.device = machineSpecific.rootDevice;
 
   # Persistent volume mount
   fileSystems."/" = {
-    device = "/dev/sda1";
+    device = machineSpecific.rootPartition;
     fsType = "ext4";
   };
 
   fileSystems."/home" = {
-    device = "/dev/disk/by-id/scsi-0HC_Volume_103912881";
+    device = machineSpecific.volumeDevice;
     fsType = "ext4";
     options = [ "discard" "defaults" ];
   };
@@ -36,7 +41,7 @@
 
   # ========= NETWORKING =========
 
-  networking.hostName = "devserver";
+  networking.hostName = machineSpecific.hostname;
   networking.useDHCP = true;
   networking.firewall.enable = true;
 

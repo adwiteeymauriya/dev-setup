@@ -6,6 +6,9 @@ result-*
 # Uncomment if you want to track hardware-configuration.nix in git
 # hardware-configuration.nix
 
+# Machine-specific configuration (device paths, hostnames)
+machine-specific.nix
+
 # Flake lock should be committed to ensure reproducibility
 # flake.lock is NOT ignored
 
