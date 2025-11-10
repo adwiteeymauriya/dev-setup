@@ -17,7 +17,18 @@ A fully declarative, reproducible development environment for Hetzner Cloud usin
 flake.nix           → Entry point, defines inputs/outputs
 configuration.nix   → System-level config (boot, users, docker, ssh)
 home.nix           → User-level config (packages, shell, dotfiles)
+hardware-configuration.nix → Hardware-specific settings (auto-generated)
 ```
+
+## Documentation
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide (TL;DR)
+- **[BOOTSTRAP.md](BOOTSTRAP.md)** - ⚠️ First-time setup: Moving /nix to volume
+- **[PERSISTENCE.md](PERSISTENCE.md)** - Volume persistence & VPS migration
+- **[DIAGRAM.md](DIAGRAM.md)** - Visual architecture diagrams
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - How the pure NixOS approach works
+- **[MIGRATION.md](MIGRATION.md)** - Comparison with bash script approach
+- **[CHEATSHEET.md](CHEATSHEET.md)** - Common commands reference
 
 ## Initial Setup on Hetzner
 
@@ -37,49 +48,33 @@ home.nix           → User-level config (packages, shell, dotfiles)
 
 ### Setup Steps
 
-1. **Format the volume** (one-time, if new volume):
-   ```bash
-   # Check available devices
-   ls -la /dev/disk/by-id/
+```bash
+# 1. Format volume (if new)
+mkfs.ext4 /dev/disk/by-id/scsi-0HC_Volume_103912881
 
-   # Format as ext4 (DESTRUCTIVE - only if new/empty volume!)
-   mkfs.ext4 /dev/disk/by-id/scsi-0HC_Volume_103912881
-   ```
+# 2. Clone configuration
+git clone <your-repo-url> /etc/nixos
+cd /etc/nixos
 
-2. **Clone this configuration**:
-   ```bash
-   git clone <your-repo-url> /etc/nixos
-   cd /etc/nixos
-   ```
+# 3. Generate hardware config
+nixos-generate-config --show-hardware-config > hardware-configuration.nix
 
-3. **Generate hardware configuration**:
-   ```bash
-   nixos-generate-config --show-hardware-config > hardware-configuration.nix
-   ```
+# 4. Review configuration.nix (adjust volume path, username, SSH keys, etc.)
 
-4. **Review and adjust configuration.nix**:
-   - Verify volume device path matches your system
-   - Adjust root filesystem device if needed
-   - Update username/UID/GID if desired
-   - Add SSH public keys
+# 5. Apply configuration
+nixos-rebuild switch --flake .#devserver
 
-5. **Apply the configuration**:
-   ```bash
-   nixos-rebuild switch --flake .#devserver
-   ```
+# 6. Reboot
+reboot
+```
 
-6. **Reboot** (recommended for first-time setup):
-   ```bash
-   reboot
-   ```
-
-That's it! No bash scripts needed. Everything is declarative.
+**Note:** By default, `/nix` (package store) stays on the root disk for simplicity. Only `/home` (your data) is persistent on the volume. When you recreate a VPS, packages are redownloaded (~10-20 min with NixOS binary cache). See [BOOTSTRAP.md](BOOTSTRAP.md) if you want persistent `/nix` (advanced).
 
 ### What NixOS Handles Automatically
 
 When you run `nixos-rebuild switch --flake .#devserver`, NixOS will:
 
-- ✅ Mount all filesystems (including the volume and /nix bind mount)
+- ✅ Mount the volume to `/home`
 - ✅ Create the user `qwe` with correct UID/GID
 - ✅ Set up passwordless sudo
 - ✅ Configure and start SSH service
@@ -88,7 +83,9 @@ When you run `nixos-rebuild switch --flake .#devserver`, NixOS will:
 - ✅ Apply home-manager configuration (dev tools, shell, etc.)
 - ✅ Set proper file permissions
 
-**The only manual step**: Formatting the volume initially (if it's a new/empty volume).
+**Manual steps:**
+1. Formatting the volume (one-time, if new)
+2. Packages redownload on new VPS (~10-20 min via binary cache)
 
 ## Usage
 

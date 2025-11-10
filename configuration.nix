@@ -29,13 +29,10 @@
     options = [ "discard" "defaults" ];
   };
 
-  # Bind mount /nix to persistent storage
-  fileSystems."/nix" = {
-    device = "/home/qwe/nix";
-    fsType = "none";
-    options = [ "bind" ];
-    depends = [ "/home" ];
-  };
+  # NOTE: /nix stays on root disk (ephemeral)
+  # This is simpler and avoids bootstrap complexity.
+  # NixOS has excellent binary caches, so rebuilds are fast (~10-20 min).
+  # If you want persistent /nix, see BOOTSTRAP.md for the process.
 
   # ========= NETWORKING =========
 
@@ -77,6 +74,8 @@
   virtualisation.docker = {
     enable = true;
     autoPrune.enable = true;
+    # Store Docker data on persistent volume (uncomment to enable)
+    # dataRoot = "/home/qwe/docker";
   };
 
   # ========= SYSTEM PACKAGES =========

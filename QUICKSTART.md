@@ -2,33 +2,36 @@
 
 ## TL;DR - Pure NixOS Setup
 
-### One-Time Setup
+### One-Time Setup (Custom nixos-infect)
 
 ```bash
-# 1. Install NixOS (if not already)
-curl https://raw.githubusercontent.com/elitak/nixos-infect/master/nixos-infect | \
-  NIX_CHANNEL=nixos-unstable bash
+# 1. On Debian/Ubuntu Hetzner VPS, install NixOS with volume support
+wget https://raw.githubusercontent.com/<your-repo>/nixos-infect-custom
+chmod +x nixos-infect-custom
 
-# (reboot into NixOS)
+VOLUME_DEVICE="/dev/disk/by-id/scsi-0HC_Volume_103912881" \
+  NIX_CHANNEL=nixos-unstable \
+  bash nixos-infect-custom
 
-# 2. Format volume (only if new/empty)
-mkfs.ext4 /dev/disk/by-id/scsi-0HC_Volume_103912881
+# System reboots automatically into NixOS
 
-# 3. Clone and apply configuration
+# 2. After reboot, apply your configuration
 git clone <your-repo> /etc/nixos
 cd /etc/nixos
-nixos-generate-config --show-hardware-config > hardware-configuration.nix
 nixos-rebuild switch --flake .#devserver
 
 # Done! ✨
 ```
 
+**Note:** The custom infect script configures the volume during installation. No manual bootstrap needed!
+
+See [CUSTOM-INFECT.md](CUSTOM-INFECT.md) for advanced options like persistent `/nix`.
+
 ## What You Get
 
 A fully configured development server with:
 - User `qwe` (UID 1000, passwordless sudo)
-- Persistent `/home` on external volume
-- Persistent `/nix` (bind mounted to volume)
+- Persistent `/home` on external volume (survives VPS changes)
 - Docker installed and running
 - Development tools: Node.js, Python (uv), Devbox
 - Zsh with Oh-My-Zsh, Starship prompt

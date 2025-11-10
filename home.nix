@@ -12,6 +12,7 @@
   home.packages = with pkgs; [
     # Development tools
     devbox
+    git
 
     # Node.js ecosystem
     nodejs_22
